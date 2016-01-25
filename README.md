@@ -14,11 +14,6 @@ The following **required** functionality is completed:
 * [x] User can **tap a todo item in the list and bring up an edit screen for the todo item** and then have any changes to the text reflected in the todo list.
 * [x] User can **persist todo items** and retrieve them properly on app restart
 
-
-The following **additional** features are implemented:
-
-* [ ] List anything else that you can get done to improve the app functionality!
-
 ## Notes
 
 I came to learn about CodePath at the very last mintue and had to complete this project within a few hours. I only had time to implement the very basic and required funtionalities.
