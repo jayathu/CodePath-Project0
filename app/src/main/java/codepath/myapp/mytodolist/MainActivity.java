@@ -19,9 +19,14 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import codepath.myapp.mytodolist.data.Task;
+import codepath.myapp.mytodolist.data.ToDoDbHelper;
 
 public class MainActivity extends AppCompatActivity {
 
+    ToDoDbHelper databaseHelper;
     ArrayList<String> listItems;
     ArrayAdapter<String> listItemsAdapter;
 
@@ -39,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.lvItems);
         editText = (EditText)findViewById(R.id.edText);
 
+        databaseHelper = ToDoDbHelper.getsInstance(this);
         populateListItems();
 
         listView.setAdapter(listItemsAdapter);
@@ -47,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 listItems.remove(position);
                 listItemsAdapter.notifyDataSetChanged();
-                writeItems();
+                //writeItems();
+                writeItemsToDb();
                 return true;
             }
         });
@@ -78,9 +85,10 @@ public class MainActivity extends AppCompatActivity {
             String message = data.getStringExtra(EditItemActivity.EDITED_RESULT);
             int index = data.getIntExtra(EditItemActivity.EDITED_RESULT_ID, 0);
             listItems.add(index, message);
-            listItems.remove(index+1);
+            listItems.remove(index + 1);
             listItemsAdapter.notifyDataSetChanged();
-            writeItems();
+            //writeItems();
+            writeItemsToDb();
         }
     }
 
@@ -110,7 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
         listItems = new ArrayList<String>();
 
-        readItems();
+        //readItems();
+        readItemsFromDb();
 
         listItemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems );
     }
@@ -119,9 +128,35 @@ public class MainActivity extends AppCompatActivity {
 
         listItemsAdapter.add(editText.getText().toString());
         editText.setText("");
-        writeItems();
+        //writeItems();
+        writeItemsToDb();
     }
 
+    private void readItemsFromDb() {
+
+        List<Task> tasks = databaseHelper.getAllTasks();
+        try {
+            for(Task task : tasks) {
+                listItems.add(task.description);
+            }
+        }catch (Exception e) {
+            listItems = new ArrayList<>();
+        }
+    }
+
+    private void writeItemsToDb() {
+
+        databaseHelper.deleteAllTasks();
+        for(int i = 0; i < listItems.size(); i++)
+        {
+            Task task = new Task();
+            task.index = i;
+            task.description = listItems.get(i);
+            databaseHelper.addTask(task);
+        }
+    }
+
+    /*
     private void readItems()
     {
         File fileDir = getFilesDir();
@@ -143,5 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }catch (IOException e) {
                 e.printStackTrace();
         }
-    }
+    }*/
+
+
 }
