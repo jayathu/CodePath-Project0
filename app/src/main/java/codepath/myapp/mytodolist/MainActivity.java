@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -19,41 +20,45 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import codepath.myapp.mytodolist.data.Task;
 import codepath.myapp.mytodolist.data.ToDoDbHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ActionBarActivity {
 
     ToDoDbHelper databaseHelper;
-    ArrayList<String> listItems;
-    ArrayAdapter<String> listItemsAdapter;
-
-    ListView listView;
     EditText editText;
 
     public final static String EXTRA_MESSAGE = "codepath.myapp.mytodolist.MESSAGE";
     public final static String EXTRA_MESSAGE_ID = "codepath.myapp.mytodolist.MESSAGE_ID";
 
+    private TaskArrayAdapter taskArrayAdapter;
+
+    ArrayList<Task> tasks;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_test);
 
-        listView = (ListView)findViewById(R.id.lvItems);
-        editText = (EditText)findViewById(R.id.edText);
+        tasks = new ArrayList<>();
+        taskArrayAdapter = new TaskArrayAdapter(this, tasks);
+
+        // Get a reference to the ListView, and attach this adapter to it.
+        ListView listView = (ListView)findViewById(R.id.listview_tasks);
+        listView.setAdapter(taskArrayAdapter);
+
+        editText = (EditText)findViewById(R.id.edTextTest);
 
         databaseHelper = ToDoDbHelper.getsInstance(this);
         populateListItems();
 
-        listView.setAdapter(listItemsAdapter);
-
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                listItems.remove(position);
-                listItemsAdapter.notifyDataSetChanged();
-                //writeItems();
+                tasks.remove(position);
+                taskArrayAdapter.notifyDataSetChanged();
                 writeItemsToDb();
                 return true;
             }
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
-                String message = listItems.get(position);
+                String message = tasks.get(position).title;
                 intent.putExtra(EXTRA_MESSAGE, message);
                 intent.putExtra(EXTRA_MESSAGE_ID, position);
                 startActivityForResult(intent, 2);  //TODO:2 = resultCode ?? Why? See Documentation
@@ -84,10 +89,12 @@ public class MainActivity extends AppCompatActivity {
         {
             String message = data.getStringExtra(EditItemActivity.EDITED_RESULT);
             int index = data.getIntExtra(EditItemActivity.EDITED_RESULT_ID, 0);
-            listItems.add(index, message);
-            listItems.remove(index + 1);
-            listItemsAdapter.notifyDataSetChanged();
-            //writeItems();
+            Task task = tasks.get(index);
+            task.title = message;
+
+            tasks.add(index, task);
+            tasks.remove(index + 1);
+            taskArrayAdapter.notifyDataSetChanged();
             writeItemsToDb();
         }
     }
@@ -116,69 +123,37 @@ public class MainActivity extends AppCompatActivity {
 
     private void populateListItems() {
 
-        listItems = new ArrayList<String>();
-
-        //readItems();
         readItemsFromDb();
-
-        listItemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems );
     }
 
     public void onAddItem(View view) {
 
-        listItemsAdapter.add(editText.getText().toString());
+        Task task = new Task(editText.getText().toString(), "The task has been modified", "1");
+        taskArrayAdapter.add(task);
         editText.setText("");
-        //writeItems();
         writeItemsToDb();
     }
 
     private void readItemsFromDb() {
 
-        List<Task> tasks = databaseHelper.getAllTasks();
+        List<Task> tempTasks = databaseHelper.getAllTasks();
         try {
-            for(Task task : tasks) {
-                listItems.add(task.description);
+            for(Task task : tempTasks) {
+                tasks.add(task);
             }
         }catch (Exception e) {
-            listItems = new ArrayList<>();
+            tasks = new ArrayList<>();
         }
     }
 
     private void writeItemsToDb() {
 
         databaseHelper.deleteAllTasks();
-        for(int i = 0; i < listItems.size(); i++)
-        {
-            Task task = new Task();
-            task.index = i;
-            task.description = listItems.get(i);
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
             databaseHelper.addTask(task);
         }
     }
-
-    /*
-    private void readItems()
-    {
-        File fileDir = getFilesDir();
-        File file = new File(fileDir, "todo.txt");
-        try{
-            listItems = new ArrayList<String>(FileUtils.readLines(file));
-        }catch (IOException e) {
-            listItems = new ArrayList<String>();
-        }
-    }
-
-
-    private void writeItems()
-    {
-        File fileDir = getFilesDir();
-        File file = new File(fileDir, "todo.txt");
-        try{
-            FileUtils.writeLines(file, listItems);
-        }catch (IOException e) {
-                e.printStackTrace();
-        }
-    }*/
 
 
 }

@@ -46,8 +46,9 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
 
     //Task Table Columns
     private static final String KEY_TASK_ID = "_id";
-    private static final String TASK_INDEX = "taskIndex";
+    private static final String TASK_TITLE = "title";
     private static final String DESCRIPTION = "description";
+    private static final String REMAINING_DAYS = "remainingDays";
 
 
     //Called when the database connection is being configured.
@@ -67,8 +68,9 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
         String CREATE_TASKS_TABLE = "CREATE TABLE " + TABLE_TASKS +
                 "(" +
                 KEY_TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                TASK_TITLE + " TEXT," +
                 DESCRIPTION + " TEXT," +
-                TASK_INDEX + " INTEGER" +
+                REMAINING_DAYS + " TEXT" +
                 ")";
         db.execSQL(CREATE_TASKS_TABLE);
 
@@ -94,8 +96,9 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
         try {
 
             ContentValues values = new ContentValues();
+            values.put(TASK_TITLE, task.title);
             values.put(DESCRIPTION, task.description);
-            values.put(TASK_INDEX, task.index);
+            values.put(REMAINING_DAYS, task.remainingDays);
 
             db.insertOrThrow(TABLE_TASKS, null, values);
             db.setTransactionSuccessful();
@@ -117,10 +120,12 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
         try {
             if(cursor.moveToFirst()) {
                 do {
-                    Task newTask = new Task();
-                    newTask.description = cursor.getString(cursor.getColumnIndex(DESCRIPTION));
-                    newTask.index = cursor.getInt(cursor.getColumnIndex(TASK_INDEX));
-                    tasks.add(newTask);
+                    //Task newTask = new Task();
+                    String title = cursor.getString(cursor.getColumnIndex(TASK_TITLE));
+                    String description = cursor.getString(cursor.getColumnIndex(DESCRIPTION));
+                    String remainingDays = cursor.getString(cursor.getColumnIndex(REMAINING_DAYS));
+
+                    tasks.add(new Task(title, description, remainingDays));
                 } while (cursor.moveToNext());
             }
             }catch (Exception e) {
@@ -146,12 +151,25 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
-    public void removeTask(int id) {
-        ArrayList<Task> tasks = new ArrayList<>();
+
+    /*
+    public void removeTask(Task task) {
 
         SQLiteDatabase db = getReadableDatabase();
-        db.delete(TABLE_TASKS, TASK_INDEX + " = " + id, null);
+        db.delete(TABLE_TASKS, "WHERE KEY_TASK_ID = ?", new String[] { String.valueOf(task.id) });
     }
+
+    public void updateTask(int index, String title) {
+
+        SQLiteDatabase db = getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(TASK_TITLE, title);
+        //values.put(DESCRIPTION, task.description);
+        //values.put(TASK_INDEX, task.index);
+
+        db.update(TABLE_TASKS, values, KEY_TASK_ID + " = ?", new String[]{String.valueOf(task.id)});
+    }*/
 
 }
 

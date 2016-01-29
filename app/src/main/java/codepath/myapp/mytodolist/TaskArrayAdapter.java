@@ -5,28 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import codepath.myapp.mytodolist.data.Task;
-import codepath.myapp.mytodolist.TaskItem;
+
 
 /**
  * Created by jnagaraj on 1/27/16.
  */
-public class TaskItemArrayAdapter extends ArrayAdapter<TaskItem> {
+public class TaskArrayAdapter extends ArrayAdapter<Task> {
 
-    private static final String LOG_TAG = TaskItemArrayAdapter.class.getSimpleName();
+    private static final String LOG_TAG = TaskArrayAdapter.class.getSimpleName();
 
-    public TaskItemArrayAdapter(Activity context, List<TaskItem> tasks) {
+    public TaskArrayAdapter(Activity context, List<Task> tasks) {
         super(context, 0, tasks);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TaskItem task = getItem(position);
+        Task task = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.task_item_detail, parent, false);
