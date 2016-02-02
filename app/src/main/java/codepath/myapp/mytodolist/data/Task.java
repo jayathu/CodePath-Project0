@@ -13,12 +13,14 @@ public class Task {
     public String title;
     public String description;
     public String remainingDays;
+    public int colorVal;
 
-    public Task(String t, String desc, String daysLeft )
+    public Task(String t, String desc, String daysLeft, int cVal )
     {
         title = t;
         description = desc;
         remainingDays = daysLeft;
+        colorVal = cVal;
     }
 
 }

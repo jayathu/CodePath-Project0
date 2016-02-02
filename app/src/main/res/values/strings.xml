@@ -6,4 +6,12 @@
     <string name="add_item">Add an item</string>
     <string name="title_activity_edit_item">EditItemActivity</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="action_add_task">Add Task</string>
+    <string name="title_activity_add_item">Add Task</string>
+
+    <string-array name="task_category">
+        <item>Fun</item>
+        <item>Work</item>
+        <item>Personal</item>
+    </string-array>
 </resources>

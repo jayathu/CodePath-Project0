@@ -42,6 +42,9 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 
         TextView daysDescTextView = (TextView) convertView.findViewById(R.id.list_date_desc_textview);
         daysDescTextView.setText("days");
+
+        View view = (View)convertView.findViewById(R.id.listview_tasks);
+        view.setBackgroundColor(task.colorVal);
         return convertView;
     }
 }

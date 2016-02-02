@@ -7,7 +7,8 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:background="@color/yellow">
+    android:background="@color/yellow"
+    android:id="@id/listview_tasks">
 
     <LinearLayout
         android:layout_height="wrap_content"

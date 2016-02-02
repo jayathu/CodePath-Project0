@@ -9,10 +9,13 @@
     <ListView
         android:id="@+id/listview_tasks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--
         android:layout_above="@+id/btnAddItemsTest"
         android:layout_alignRight="@+id/btnAddItemsTest"
         android:layout_alignEnd="@+id/btnAddItemsTest" />
+
 
     <Button
         android:layout_width="wrap_content"
@@ -36,6 +39,8 @@
         android:layout_marginStart="38dp"
         android:layout_toLeftOf="@+id/btnAddItemsTest"
         android:layout_toStartOf="@+id/btnAddItemsTest" />
+
+        -->
 
 
 </RelativeLayout>

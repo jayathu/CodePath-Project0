@@ -39,7 +39,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
 
     //Database Info
     private static final String DATABASE_NAME = "todoDatabase";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //Table Names
     private static final String TABLE_TASKS = "tasks";
@@ -49,7 +49,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
     private static final String TASK_TITLE = "title";
     private static final String DESCRIPTION = "description";
     private static final String REMAINING_DAYS = "remainingDays";
-
+    private static final String TASK_COLOR = "taskColor";
 
     //Called when the database connection is being configured.
     //Configure database settings for things like foreign key suppert, write-ahead logging etc
@@ -70,7 +70,8 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
                 KEY_TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 TASK_TITLE + " TEXT," +
                 DESCRIPTION + " TEXT," +
-                REMAINING_DAYS + " TEXT" +
+                REMAINING_DAYS + " TEXT," +
+                TASK_COLOR + " INTEGER" +
                 ")";
         db.execSQL(CREATE_TASKS_TABLE);
 
@@ -99,6 +100,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
             values.put(TASK_TITLE, task.title);
             values.put(DESCRIPTION, task.description);
             values.put(REMAINING_DAYS, task.remainingDays);
+            values.put(TASK_COLOR, task.colorVal);
 
             db.insertOrThrow(TABLE_TASKS, null, values);
             db.setTransactionSuccessful();
@@ -124,8 +126,9 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
                     String title = cursor.getString(cursor.getColumnIndex(TASK_TITLE));
                     String description = cursor.getString(cursor.getColumnIndex(DESCRIPTION));
                     String remainingDays = cursor.getString(cursor.getColumnIndex(REMAINING_DAYS));
+                    int taskColor = cursor.getInt(cursor.getColumnIndex(TASK_COLOR));
 
-                    tasks.add(new Task(title, description, remainingDays));
+                    tasks.add(new Task(title, description, remainingDays, taskColor));
                 } while (cursor.moveToNext());
             }
             }catch (Exception e) {

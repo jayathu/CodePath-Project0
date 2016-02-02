@@ -8,26 +8,35 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--android:theme="@android:style/Theme.Holo"> -->
+
+
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            >
+            android:name="codepath.myapp.mytodolist.MainActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".EditItemActivity"
+            android:name="codepath.myapp.mytodolist.EditItemActivity"
             android:label="@string/title_activity_edit_item"
-            android:parentActivityName=".MainActivity"
-            >
+            android:parentActivityName="codepath.myapp.mytodolist.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="codepath.myapp.mytodolist.MainActivity" />
         </activity>
 
+        <activity android:name=".AddTaskActivity"
+            android:label="@string/title_activity_add_item"
+            android:parentActivityName="codepath.myapp.mytodolist.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="codepath.myapp.mytodolist.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
